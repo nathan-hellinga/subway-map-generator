@@ -1,18 +1,21 @@
+from route import Route
+
 r = 25
 grid = 10
 count = 5
+bg = color(250, 241, 220)
+
+count = 1
 
 def setup():
-    background(255)
+    background(bg)
+    strokeWeight(10)
     global p1
     global p2
     size(720, 720)
     
     
 def draw_subway_line(p1, p2):
-    strokeWeight(10)
-    fill(255)
-    stroke(220, 20, 20)
     mid_point = None
     if abs(p1[0] - p2[0]) < abs(p1[1] - p2[1]):
         if p2[1] < p1[1]:
@@ -36,32 +39,37 @@ def draw_subway_line(p1, p2):
     line(mid_point[0], mid_point[1], p2[0], p2[1])
     
     
-def draw_station(p1, p2):
+def draw_station(p1):
+    fill(bg)
     ellipse(p1[0], p1[1], r, r)
-    ellipse(p2[0], p2[1], r, r)
     
     
-    
-def generate_map():
-    stations = []
-    for i in range(count):
-        p1 = int(random(grid - 1) + 1) * int(width / grid), int(random(grid - 1) + 1) * int(height / grid)
-        p2 = int(random(grid - 1) + 1) * int(width / grid), int(random(grid - 1) + 1) * int(height / grid)
-        # check to see if thye are the same point
-        if p1[0] == p2[0] and p1[1] == p2[1]:
-            continue
-        draw_subway_line(p1, p2)
-        stations.append((p1, p2))
-    
-    # draw stations on top
-    for s in stations:
-        draw_station(s[0], s[1])
+def save_image():
+    global count
+    save("assets/output_{:02d}.png".format(count))
+    count += 1
+        
 
 
 def draw():
     frameRate(0.5)
-    background(255)
-    generate_map()
+    background(bg)
+    routes = []
+    for i in range(3):
+        routes.append(Route(int(random(4)) + 2, grid))
+        
+    # draw lines
+    for r in routes:
+        stroke(r.col)
+        for i in range(len(r.stations) -1):
+            draw_subway_line(r.stations[i], r.stations[i + 1])
+            
+    for r in routes:
+        stroke(r.col)
+        for i in r.stations:
+            draw_station(i)
+            
+    # save_image()
 
     
     
